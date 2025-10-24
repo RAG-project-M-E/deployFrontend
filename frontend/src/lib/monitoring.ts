@@ -60,10 +60,6 @@ class Monitor {
       this.logs.shift();
     }
 
-    // Console output
-    const consoleMethod = console[level] || console.log;
-    consoleMethod(`[LexAI ${level.toUpperCase()}]`, message, metadata || "");
-
     // Send to external service if configured
     this.sendToExternalService(event);
   }
@@ -90,10 +86,6 @@ class Monitor {
     };
 
     this.metrics.push(metric);
-
-    if (process.env.NODE_ENV === "development") {
-      console.log(`[LexAI METRIC] ${name}: ${duration.toFixed(2)}ms`, metadata || "");
-    }
 
     // Send to external service if configured
     this.sendMetricToExternalService(metric);
@@ -142,12 +134,6 @@ class Monitor {
   private sendToExternalService(_event: LogEvent) {
     // TODO: Integrate with external logging service
     // Example: Sentry, LogRocket, Datadog, etc.
-
-    // For now, expose to window for custom integrations
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).lexaiLogger = this;
-    }
   }
 
   private sendMetricToExternalService(_metric: PerformanceMetric) {
@@ -163,12 +149,6 @@ class Monitor {
 
 // Singleton instance
 export const monitor = new Monitor();
-
-// Expose to window for debugging in development
-if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).lexaiMonitor = monitor;
-}
 
 // Helper hook for React components
 export function useMonitor() {

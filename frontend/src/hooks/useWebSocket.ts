@@ -45,8 +45,8 @@ export const useWebSocket = (): UseWebSocketReturn => {
       });
     });
 
-    const unsubscribeError = wsClient.onError((error) => {
-      console.error('[useWebSocket] Error:', error);
+    const unsubscribeError = wsClient.onError(() => {
+      // Error handling - silent in production
     });
 
     // Cleanup subscriptions on unmount

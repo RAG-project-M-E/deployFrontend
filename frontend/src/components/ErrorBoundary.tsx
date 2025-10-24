@@ -23,9 +23,6 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log to monitoring service
-    console.error("Error caught by boundary:", error, errorInfo);
-
     // You can integrate with error tracking services here
     // Example: Sentry, LogRocket, etc.
     if (typeof window !== "undefined") {

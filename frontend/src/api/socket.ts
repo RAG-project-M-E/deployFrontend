@@ -77,8 +77,6 @@ class WebSocketClient {
    */
   private connect(): void {
     try {
-      console.log(`[WebSocket] Connecting to ${this.config.url}...`);
-
       this.socket = new WebSocket(this.config.url);
 
       this.socket.onopen = this.handleOpen.bind(this);
@@ -86,8 +84,7 @@ class WebSocketClient {
       this.socket.onerror = this.handleError.bind(this);
       this.socket.onclose = this.handleClose.bind(this);
 
-    } catch (error) {
-      console.error('[WebSocket] Connection failed:', error);
+    } catch (_error) {
       this.scheduleReconnect();
     }
   }
@@ -96,7 +93,6 @@ class WebSocketClient {
    * Handle connection opened
    */
   private handleOpen(_event: Event): void {
-    console.log('[WebSocket] ✅ Connected successfully');
     this.reconnectAttempts = 0;
     this.isIntentionallyClosed = false;
 
@@ -117,16 +113,13 @@ class WebSocketClient {
     if (typeof event.data === 'string' && (event.data.trim().startsWith('{') || event.data.trim().startsWith('['))) {
       try {
         parsedData = JSON.parse(event.data);
-        console.log('[WebSocket] 📨 JSON message received:', parsedData);
-      } catch (error) {
+      } catch (_error) {
         // Failed to parse JSON, treat as plain text
         parsedData = { message: event.data };
-        console.log('[WebSocket] 📨 Text message received:', event.data);
       }
     } else {
       // Plain text message - wrap it in a consistent format
       parsedData = { message: event.data };
-      console.log('[WebSocket] 📨 Text message received:', event.data);
     }
 
     // Notify all message handlers
@@ -136,19 +129,15 @@ class WebSocketClient {
   /**
    * Handle errors
    */
-  private handleError(event: Event): void {
-    console.error('[WebSocket] ❌ Error occurred:', event);
-
+  private handleError(_event: Event): void {
     // Notify all error handlers
-    this.errorHandlers.forEach(handler => handler(event));
+    this.errorHandlers.forEach(handler => handler(_event));
   }
 
   /**
    * Handle connection closed
    */
-  private handleClose(event: CloseEvent): void {
-    console.log(`[WebSocket] 🔌 Connection closed (Code: ${event.code}, Reason: ${event.reason || 'No reason provided'})`);
-
+  private handleClose(_event: CloseEvent): void {
     // Stop heartbeat
     this.stopHeartbeat();
 
@@ -166,7 +155,6 @@ class WebSocketClient {
    */
   private scheduleReconnect(): void {
     if (this.reconnectAttempts >= this.config.maxReconnectAttempts) {
-      console.error(`[WebSocket] ⚠️ Max reconnection attempts (${this.config.maxReconnectAttempts}) reached. Giving up.`);
       return;
     }
 
@@ -176,8 +164,6 @@ class WebSocketClient {
 
     this.reconnectAttempts++;
     const delay = this.config.reconnectInterval * Math.min(this.reconnectAttempts, 5); // Exponential backoff cap at 5x
-
-    console.log(`[WebSocket] 🔄 Reconnecting in ${delay}ms (Attempt ${this.reconnectAttempts}/${this.config.maxReconnectAttempts})...`);
 
     this.reconnectTimer = setTimeout(() => {
       this.connect();
@@ -240,17 +226,14 @@ class WebSocketClient {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public send(data: any): boolean {
     if (!this.isConnected()) {
-      console.warn('[WebSocket] ⚠️ Cannot send message - WebSocket not open. Current state:', this.getState());
       return false;
     }
 
     try {
       const message = typeof data === 'string' ? data : JSON.stringify(data);
       this.socket!.send(message);
-      console.log('[WebSocket] 📤 Message sent:', data);
       return true;
-    } catch (error) {
-      console.error('[WebSocket] Failed to send message:', error);
+    } catch (_error) {
       return false;
     }
   }
@@ -298,7 +281,6 @@ class WebSocketClient {
    * Manually close the connection
    */
   public close(code = 1000, reason = 'Client closed connection'): void {
-    console.log('[WebSocket] 👋 Closing connection manually...');
     this.isIntentionallyClosed = true;
 
     this.stopHeartbeat();
@@ -318,7 +300,6 @@ class WebSocketClient {
    * Manually reconnect
    */
   public reconnect(): void {
-    console.log('[WebSocket] 🔄 Manual reconnect requested...');
     this.close(1000, 'Reconnecting');
     this.isIntentionallyClosed = false;
     this.reconnectAttempts = 0;
