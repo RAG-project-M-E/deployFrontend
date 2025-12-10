@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description:
     "LexAI ile Türk hukuku konusunda profesyonel destek alın. Ceza hukuku, borçlar hukuku ve daha fazlası hakkında güvenilir yanıtlar.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
   },
 };
 
