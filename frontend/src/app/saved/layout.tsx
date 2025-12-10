@@ -9,35 +9,32 @@ export default function SavedLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [activePage, setActivePage] = useState("saved");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const startNewChat = () => {
     router.push("/");
   };
 
-  const handleSetActivePage = (page: string) => {
-    if (page === "chat") {
-      router.push("/");
-    } else if (page === "saved") {
-      router.push("/saved");
-    }
-    setActivePage(page);
-  };
-
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
+  const shellPadding = isSidebarOpen ? "md:pl-[300px]" : "md:pl-0";
+
   return (
-    <div className="flex flex-1 min-h-screen bg-[#F9F8F6] overflow-hidden">
+    <div className={`flex flex-1 min-h-screen bg-gradient-to-br from-[#050C1D] via-[#0B1B38] to-[#0E2F5A] text-slate-50 overflow-hidden ${shellPadding}`}>
       <Sidebar
-        setActivePage={handleSetActivePage}
-        activePage={activePage}
         startNewChat={startNewChat}
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
+      {isSidebarOpen && (
+        <button
+          onClick={toggleSidebar}
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-[2px] md:hidden"
+          aria-label="Menüyü kapat"
+        />
+      )}
       <div className="flex-1">{children}</div>
     </div>
   );
