@@ -16,7 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "LexAI - Türk Hukuku Yapay Zeka Asistanı",
-  description: "LexAI ile Türk hukuku konusunda profesyonel destek alın. Ceza hukuku, borçlar hukuku ve daha fazlası hakkında güvenilir yanıtlar.",
+  description:
+    "LexAI ile Türk hukuku konusunda profesyonel destek alın. Ceza hukuku, borçlar hukuku ve daha fazlası hakkında güvenilir yanıtlar.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
