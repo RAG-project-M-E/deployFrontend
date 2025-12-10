@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // Pin Turbopack root to this project to avoid lockfile root confusion
-  turbopack: {
-    root: __dirname,
-  },
-};
+// Use defaults to avoid Turbopack/output tracing root conflicts on Vercel
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
